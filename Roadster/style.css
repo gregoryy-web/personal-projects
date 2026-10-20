@@ -1,0 +1,358 @@
+:root {
+    --bg: #eef1f3;
+    --ink: #16181a;
+    --line: #2a2d30;
+    --red: #d4141f;
+    --mute: #7b8187;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px)
+}
+
+@media (prefers-color-scheme:dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #101214;
+        --ink: #f1f3f4;
+        --line: #d9dde0;
+        --mute: #8a9096
+    }
+}
+
+:root[data-theme="dark"] {
+    --bg: #101214;
+    --ink: #f1f3f4;
+    --line: #d9dde0;
+    --mute: #8a9096
+}
+
+html {
+    scroll-padding-top: env(safe-area-inset-top, 0px)
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Chakra Petch", "Arial Narrow", Arial, sans-serif
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: calc(18px + env(safe-area-inset-top, 0px)) 28px 14px;
+    background: var(--bg)
+}
+
+.logo {
+    font-weight: 700;
+    letter-spacing: .28em;
+    font-size: 15px
+}
+
+nav {
+    display: flex;
+    gap: 22px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase
+}
+
+nav a {
+    color: var(--ink);
+    text-decoration: none
+}
+
+.reserve {
+    border: 1.5px solid var(--ink);
+    border-radius: 20px;
+    padding: 7px 18px;
+    font-size: 12px;
+    letter-spacing: .14em;
+    background: none;
+    color: var(--ink);
+    font-family: inherit;
+    cursor: pointer
+}
+
+.reserve:focus-visible,
+nav a:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 3px
+}
+
+#track {
+    height: 520vh
+}
+
+#stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    height: 100dvh;
+    overflow: hidden
+}
+
+svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%
+}
+
+.draw {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1.6;
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+    stroke-linejoin: round
+}
+
+#solid {
+    fill: var(--ink);
+    opacity: 0
+}
+
+.veh {
+    position: absolute;
+    opacity: 0;
+    will-change: transform, opacity
+}
+
+.veh svg {
+    position: static;
+    width: 100%;
+    height: auto;
+    display: block
+}
+
+#v1 {
+    left: 12%;
+    top: 22%;
+    width: 22vmin
+}
+
+#v2 {
+    left: 46%;
+    top: 14%;
+    width: 20vmin
+}
+
+#v3 {
+    left: 70%;
+    top: 30%;
+    width: 22vmin
+}
+
+#ticker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 16%;
+    height: clamp(46px, 9vh, 76px);
+    background: var(--red);
+    color: #fff;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    transform: translateX(105%);
+    will-change: transform
+}
+
+#ticker div {
+    white-space: nowrap;
+    font-weight: 700;
+    font-size: clamp(20px, 4.6vw, 44px);
+    letter-spacing: .04em;
+    padding-left: 24px;
+    font-style: italic
+}
+
+#spec {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 20%;
+    text-align: center;
+    opacity: 0
+}
+
+#spec b {
+    display: block;
+    font-size: clamp(64px, min(20vw, 26vh), 220px);
+    line-height: .9;
+    font-weight: 700
+}
+
+#spec span {
+    font-size: 14px;
+    letter-spacing: .2em;
+    color: var(--mute)
+}
+
+#brand {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .04em;
+    font-weight: 700;
+    font-size: clamp(56px, min(22vw, 38vh), 300px);
+    color: var(--red);
+    letter-spacing: .02em;
+    pointer-events: none
+}
+
+#brand i {
+    font-style: normal;
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(60%)
+}
+
+#hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(6% + env(safe-area-inset-bottom, 0px));
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: .2em;
+    color: var(--mute);
+    padding: 0 16px
+}
+
+@media (max-width:640px) {
+    nav {
+        display: none
+    }
+
+    header {
+        padding-left: 18px;
+        padding-right: 18px
+    }
+
+    .reserve {
+        margin-left: auto
+    }
+}
+
+@media (max-width:900px) {
+    #track {
+        height: 440vh
+    }
+
+    nav {
+        gap: 14px
+    }
+
+    header {
+        gap: 16px;
+        padding-left: 20px;
+        padding-right: 20px
+    }
+}
+
+@media (orientation:portrait) {
+    #v1 {
+        left: 5%;
+        top: 13%;
+        width: 34vw
+    }
+
+    #v2 {
+        left: 36%;
+        top: 9%;
+        width: 30vw
+    }
+
+    #v3 {
+        left: 62%;
+        top: 15%;
+        width: 34vw
+    }
+
+    #spec {
+        top: 26%
+    }
+
+    #ticker {
+        bottom: 24%
+    }
+}
+
+@media (max-width:640px) {
+    .logo {
+        font-size: 12px;
+        letter-spacing: .16em
+    }
+
+    .reserve {
+        padding: 6px 14px;
+        font-size: 11px
+    }
+
+    #ticker div {
+        padding-left: 14px
+    }
+}
+
+@media (max-height:480px) and (orientation:landscape) {
+    header {
+        padding-top: calc(8px + env(safe-area-inset-top, 0px));
+        padding-bottom: 8px
+    }
+
+    #hint {
+        display: none
+    }
+
+    #ticker {
+        bottom: 8%;
+        height: 44px
+    }
+
+    #spec {
+        top: 14%
+    }
+
+    #v1,
+    #v2,
+    #v3 {
+        top: 14%
+    }
+}
+
+@media (min-width:1600px) {
+    header {
+        padding-left: 56px;
+        padding-right: 56px
+    }
+}
+
+@media (hover:none) {
+    .reserve:active {
+        background: var(--ink);
+        color: var(--bg)
+    }
+}
+
+@media (prefers-reduced-motion:reduce) {
+    #hint {
+        display: none
+    }
+}

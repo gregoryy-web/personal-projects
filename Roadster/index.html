@@ -1,1 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Tesla Roadster (personal practice project)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <span class="logo">TESLA &nbsp;ROADSTER</span>
+        <nav><a href="#top">Performance</a><a href="#top">Specs</a><a href="#top">Design</a></nav>
+        <button class="reserve">Reserve</button>
+    </header>
+    <main id="track">
+        <section id="stage" aria-label="Roadster scroll showcase">
+            <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                <path id="arc" class="draw" d="M330 190 H620 Q930 190 930 400 Q930 600 640 600 H260" />
+                <path id="car" class="draw"
+                    d="M360 470 C380 440 430 428 470 420 C520 396 560 380 610 380 C650 380 690 395 730 415 L810 420 C830 422 838 436 836 456 L830 470 M360 470 L384 470 M436 470 L744 470 M796 470 L830 470 M470 420 L520 440 L700 440 M760 376 L836 372 M610 380 L640 418" />
+                <g id="wheels">
+                    <circle class="draw" cx="410" cy="470" r="38" />
+                    <circle class="draw" cx="410" cy="470" r="20" />
+                    <circle class="draw" cx="770" cy="470" r="38" />
+                    <circle class="draw" cx="770" cy="470" r="20" />
+                </g>
+                <path id="solid"
+                    d="M360 470 C380 440 430 428 470 420 C520 396 560 380 610 380 C650 380 690 395 730 415 L810 420 C830 422 838 436 836 456 L830 470 Z" />
+            </svg>
+            <div class="veh" id="v1"><svg viewBox="0 0 200 80">
+                    <path fill="#c7222c"
+                        d="M10 58 C20 44 50 40 75 34 C100 22 125 22 148 34 L186 40 C194 42 194 54 190 58 Z" />
+                    <circle cx="48" cy="58" r="12" fill="#222" />
+                    <circle cx="152" cy="58" r="12" fill="#222" />
+                </svg></div>
+            <div class="veh" id="v2"><svg viewBox="0 0 200 120">
+                    <rect x="30" y="10" width="110" height="80" rx="10" fill="#e4e7ea" stroke="#9aa0a6" />
+                    <rect x="40" y="22" width="60" height="34" rx="6" fill="#2b2f33" />
+                    <rect x="20" y="86" width="150" height="18" rx="6" fill="#cfd3d7" />
+                    <circle cx="60" cy="108" r="9" fill="#222" />
+                    <circle cx="140" cy="108" r="9" fill="#222" />
+                </svg></div>
+            <div class="veh" id="v3"><svg viewBox="0 0 200 80">
+                    <path fill="#aeb4ba" d="M8 58 L60 30 L150 28 L192 52 L192 60 L8 60 Z" />
+                    <circle cx="52" cy="60" r="12" fill="#222" />
+                    <circle cx="148" cy="60" r="12" fill="#222" />
+                </svg></div>
+            <div id="spec"><b id="num">0.0</b><span>SECONDS, 0&ndash;60 MPH</span></div>
+            <div id="ticker" aria-hidden="true">
+                <div>ROADSTER &nbsp;•&nbsp; 0-60 MPH 1.9 S &nbsp;•&nbsp; TOP SPEED 250+ MPH &nbsp;•&nbsp; ROADSTER
+                    &nbsp;•&nbsp; 0-60 MPH 1.9 S</div>
+            </div>
+            <div id="brand" aria-label="Tesla"><i>T</i><i>E</i><i>S</i><i>L</i><i>A</i></div>
+            <div id="hint">SCROLL &nbsp;·&nbsp; personal practice project, not affiliated with Tesla</div>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+
+</html>
