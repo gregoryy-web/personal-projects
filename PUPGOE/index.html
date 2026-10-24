@@ -4,13 +4,25 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Prevents dark mode forcing on mobile browsers/OS -->
+    <meta name="color-scheme" content="light"> 
     <title>PUP Equivalence of Grades</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #ffffff !important;
+            color: #212529 !important;
+        }
+        .card {
+            background-color: #ffffff !important;
+            color: #212529 !important;
+        }
+    </style>
 </head>
 
 <body>
-    <h3 class="text-center bg-white p-4 m-0" style="background-color: maroon;">PUP Equivalence of Grades</h3>
+    <h3 class="text-center text-white p-4 m-0" style="background-color: maroon;">PUP Equivalence of Grades</h3>
 
     <div class="container mt-4" style="max-width: 600px;">
         <div class="row">
@@ -20,10 +32,10 @@
                     
                     <div class="mb-3 mt-4">
                         <label for="gradeInput" class="form-label">Enter your numerical grade (example: 90):</label>
-                        <input type="number" id="gradeInput" class="form-control mt-4" placeholder="Enter your grade here" min="0" max="100">
+                        <input type="number" id="gradeInput" class="form-control mt-2" placeholder="Enter your grade here" min="0" max="100">
                     </div>
 
-                    <button class="btn w-100 mt-4" style="background-color: maroon; color: white; border-color: maroon;" onclick="calculateGrade()">Calculate</button>
+                    <button class="btn w-100 mt-3" style="background-color: maroon; color: white; border-color: maroon;" onclick="calculateGrade()">Calculate</button>
 
                     <div id="resultContainer" class="mt-4 text-center" style="display: none;">
                         <h5>Result:</h5>
@@ -70,16 +82,12 @@
                 equivalent = "5.00 (Failed)";
             }
 
-
-        
             equivalentText.innerHTML = "PUP Equivalence: " + equivalent;
             resultBox.style.display = "block";
         }
     </script>
 
-    <script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-1a/pXj49ZQ1aHEmrJ+gMw1otqoVsYwlEnlD8mIfY2TV03r20Y0CN7uqx1tQogjPL"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
