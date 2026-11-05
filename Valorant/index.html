@@ -1,1 +1,78 @@
+<!doctype html>
+<html lang="en">
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Valorant hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <h1 class="site-title"><span class="brand-mark" aria-hidden="true"></span>Valorant hub</h1>
+            <nav class="tab-bar" role="tablist" aria-label="Sections">
+                <button type="button" class="tab-button" role="tab" id="tabAgents" data-panel="panelAgents"
+                    aria-controls="panelAgents" aria-selected="true">Agents</button>
+                <button type="button" class="tab-button" role="tab" id="tabMaps" data-panel="panelMaps"
+                    aria-controls="panelMaps" aria-selected="false" tabindex="-1">Maps</button>
+                <button type="button" class="tab-button" role="tab" id="tabWeapons" data-panel="panelWeapons"
+                    aria-controls="panelWeapons" aria-selected="false" tabindex="-1">Weapons</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container main-content">
+
+        <section id="panelAgents" role="tabpanel" aria-labelledby="tabAgents">
+            <h2 class="panel-title">Agents</h2>
+            <p class="panel-note">Pick an agent to see their abilities.</p>
+            <div class="toolbar">
+                <label class="visually-hidden" for="agentSearch">Search agents</label>
+                <input type="search" id="agentSearch" class="form-control val-input toolbar-search"
+                    placeholder="Search agents" autocomplete="off">
+                <div class="chip-group" id="roleFilters" role="group" aria-label="Filter by role"></div>
+            </div>
+            <p class="status" id="agentStatus" role="status"></p>
+            <div class="row g-3 row-cols-2 sm:row-cols-3 md:row-cols-4 xl:row-cols-6" id="agentGrid"></div>
+        </section>
+
+        <section id="panelMaps" role="tabpanel" aria-labelledby="tabMaps" hidden>
+            <h2 class="panel-title">Maps</h2>
+            <p class="panel-note">Every map the game ships with, including the Range.</p>
+            <p class="status" id="mapStatus" role="status"></p>
+            <div class="row g-3 row-cols-1 sm:row-cols-2 lg:row-cols-3" id="mapGrid"></div>
+        </section>
+
+        <section id="panelWeapons" role="tabpanel" aria-labelledby="tabWeapons" hidden>
+            <h2 class="panel-title">Weapons</h2>
+            <p class="panel-note">Credit cost and category for every weapon.</p>
+            <div class="toolbar">
+                <div class="chip-group" id="weaponFilters" role="group" aria-label="Filter by category"></div>
+            </div>
+            <p class="status" id="weaponStatus" role="status"></p>
+            <div class="row g-3 row-cols-1 sm:row-cols-2 lg:row-cols-3" id="weaponGrid"></div>
+        </section>
+    </main>
+
+    <dialog id="agentDialog" class="val-dialog" aria-labelledby="agentDialogTitle">
+        <div class="dialog-body">
+            <button type="button" class="dialog-close" id="agentDialogClose"
+                aria-label="Close agent details">&times;</button>
+            <div class="row g-0" id="agentDialogContent"></div>
+        </div>
+    </dialog>
+
+    <script type="module"
+        src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js" defer></script>
+</body>
+
+</html>

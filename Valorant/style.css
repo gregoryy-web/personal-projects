@@ -1,0 +1,510 @@
+:root {
+    --val-ink: #0f1923;
+    --val-panel: #17222d;
+    --val-raise: #1f2d3a;
+    --val-line: #2d3d4c;
+    --val-bone: #ece8e1;
+    --val-mist: #98a5b1;
+    --val-red: #ff4655;
+    --val-win: #46d7a6;
+    --val-cut: 14px;
+    --val-cut-small: 8px;
+    --val-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --val-body: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+html {
+    color-scheme: dark;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--val-ink);
+    color: var(--val-bone);
+    font-family: var(--val-body);
+    font-size: 1rem;
+    line-height: 1.55;
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--val-display);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    margin: 0;
+}
+
+code {
+    color: var(--val-bone);
+    background: var(--val-raise);
+    padding: 0.1rem 0.35rem;
+}
+
+.visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--val-panel);
+    border-bottom: 1px solid var(--val-line);
+}
+
+.header-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 2rem;
+}
+
+.site-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-block: 0.8rem;
+    font-size: clamp(1.6rem, 4vw, 2.1rem);
+}
+
+.brand-mark {
+    width: 1.1rem;
+    height: 1.1rem;
+    background: var(--val-red);
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 45% 100%, 0 100%);
+}
+
+.tab-bar {
+    display: flex;
+    gap: 0.25rem;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.tab-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-button {
+    flex: none;
+    padding: 0.85rem 1rem;
+    background: transparent;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    color: var(--val-mist);
+    font-family: var(--val-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tab-button:hover {
+    color: var(--val-bone);
+}
+
+.tab-button[aria-selected='true'] {
+    color: var(--val-bone);
+    border-bottom-color: var(--val-red);
+}
+
+@media (max-width: 767.98px) {
+    .tab-bar {
+        width: 100%;
+        margin-inline: -0.25rem;
+    }
+}
+
+
+.main-content {
+    padding-block: 1.75rem 4rem;
+}
+
+.panel-title {
+    font-size: clamp(2.2rem, 6vw, 3.4rem);
+}
+
+.panel-note {
+    margin: 0.35rem 0 0;
+    color: var(--val-mist);
+    max-width: 60ch;
+}
+
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin-block: 1.5rem 1.25rem;
+}
+
+.toolbar-search {
+    flex: 1 1 14rem;
+    max-width: 22rem;
+}
+
+.status {
+    margin: 0 0 1rem;
+    color: var(--val-mist);
+}
+
+.status.is-error {
+    color: var(--val-red);
+}
+
+
+.val-input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    background: var(--val-raise);
+    border: 1px solid var(--val-line);
+    border-radius: 0;
+    color: var(--val-bone);
+    font-family: var(--val-body);
+    font-size: 1rem;
+}
+
+.val-input::placeholder {
+    color: var(--val-mist);
+}
+
+.val-input:focus-visible,
+.chip:focus-visible,
+.tab-button:focus-visible,
+.val-button:focus-visible,
+.dialog-close:focus-visible,
+.connection summary:focus-visible {
+    outline: 3px solid var(--val-bone);
+    outline-offset: -3px;
+}
+
+.field-label {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: var(--val-mist);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.field-help {
+    margin: 0.5rem 0 0;
+    color: var(--val-mist);
+    font-size: 0.92rem;
+}
+
+.val-button {
+    padding: 0.6rem 1.8rem;
+    background: var(--val-red);
+    border: 0;
+    border-radius: 0;
+    color: var(--val-ink);
+    font-family: var(--val-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    cursor: pointer;
+    clip-path: polygon(0 0, calc(100% - var(--val-cut-small)) 0, 100% var(--val-cut-small), 100% 100%, var(--val-cut-small) 100%, 0 calc(100% - var(--val-cut-small)));
+}
+
+.val-button:hover {
+    background: var(--val-bone);
+}
+
+.val-button:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+@media (max-width: 575.98px) {
+    .val-button {
+        width: 100%;
+    }
+}
+
+.chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.chip {
+    padding: 0.3rem 1rem;
+    background: var(--val-raise);
+    border: 0;
+    color: var(--val-mist);
+    font-family: var(--val-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    clip-path: polygon(0 0, calc(100% - var(--val-cut-small)) 0, 100% var(--val-cut-small), 100% 100%, var(--val-cut-small) 100%, 0 calc(100% - var(--val-cut-small)));
+}
+
+.chip:hover {
+    color: var(--val-bone);
+}
+
+.chip[aria-pressed='true'] {
+    background: var(--val-red);
+    color: var(--val-ink);
+}
+
+
+.agent-card,
+.map-card,
+.weapon-card,
+.stat-tile,
+.match-row,
+.val-dialog {
+    clip-path: polygon(0 0, calc(100% - var(--val-cut)) 0, 100% var(--val-cut), 100% 100%, var(--val-cut) 100%, 0 calc(100% - var(--val-cut)));
+}
+
+
+.agent-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    background: var(--val-panel);
+    border: 0;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.agent-card:focus-visible {
+    outline: 3px solid var(--val-bone);
+    outline-offset: -3px;
+}
+
+.agent-art {
+    display: block;
+    aspect-ratio: 1;
+    background: var(--agent-gradient, var(--val-raise));
+}
+
+.agent-art img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.agent-name {
+    padding: 0.6rem 0.8rem 0;
+    font-family: var(--val-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.agent-role {
+    padding: 0.1rem 0.8rem 0.8rem;
+    color: var(--val-mist);
+    font-size: 0.92rem;
+}
+
+.agent-card:hover .agent-name {
+    color: var(--val-red);
+}
+
+
+.map-card {
+    position: relative;
+    height: 100%;
+    min-height: 13rem;
+    background: var(--val-panel);
+    display: flex;
+    align-items: flex-end;
+}
+
+.map-card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.map-caption {
+    position: relative;
+    width: 100%;
+    padding: 2.5rem 1rem 0.9rem;
+    background: linear-gradient(to top, rgb(15 25 35 / 0.95) 25%, rgb(15 25 35 / 0));
+}
+
+.map-caption h3 {
+    font-size: 1.9rem;
+}
+
+.map-caption p {
+    margin: 0.15rem 0 0;
+    color: var(--val-mist);
+    font-size: 0.92rem;
+}
+
+.weapon-card {
+    height: 100%;
+    padding: 1rem 1.1rem 1.1rem;
+    background: var(--val-panel);
+}
+
+.weapon-card img {
+    display: block;
+    width: 100%;
+    height: 5.5rem;
+    object-fit: contain;
+    object-position: left center;
+}
+
+.weapon-card h3 {
+    margin-top: 0.6rem;
+    font-size: 1.7rem;
+}
+
+.weapon-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0.2rem 0 0;
+    color: var(--val-mist);
+}
+
+.weapon-cost {
+    color: var(--val-bone);
+    font-weight: 600;
+}
+
+
+.val-dialog {
+    width: min(960px, calc(100vw - 1.5rem));
+    max-height: calc(100dvh - 1.5rem);
+    padding: 0;
+    border: 0;
+    background: var(--val-panel);
+    color: var(--val-bone);
+    overflow-y: auto;
+}
+
+.val-dialog::backdrop {
+    background: rgb(5 10 15 / 0.82);
+}
+
+.dialog-body {
+    position: relative;
+}
+
+.dialog-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    z-index: 2;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--val-ink);
+    border: 0;
+    color: var(--val-bone);
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.dialog-close:hover {
+    background: var(--val-red);
+    color: var(--val-ink);
+}
+
+.dialog-art {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-height: 16rem;
+    height: 100%;
+    background: var(--agent-gradient, var(--val-raise));
+}
+
+.dialog-art img {
+    display: block;
+    width: 100%;
+    max-height: 30rem;
+    object-fit: contain;
+}
+
+.dialog-info {
+    padding: 1.5rem 1.5rem 1.75rem;
+}
+
+.dialog-info h2 {
+    padding-right: 2.5rem;
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
+}
+
+.dialog-role {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.4rem 0 0.9rem;
+    color: var(--val-mist);
+    font-weight: 600;
+}
+
+.dialog-role img {
+    width: 1.3rem;
+    height: 1.3rem;
+}
+
+.ability-list {
+    display: grid;
+    gap: 0.9rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ability {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    gap: 0.9rem;
+}
+
+.ability img,
+.ability-icon-empty {
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0.4rem;
+    background: var(--val-raise);
+    object-fit: contain;
+}
+
+.ability h3 {
+    font-size: 1.35rem;
+}
+
+.ability p {
+    margin: 0.15rem 0 0;
+    color: var(--val-mist);
+    font-size: 0.95rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        scroll-behavior: auto !important;
+        transition: none !important;
+        animation: none !important;
+    }
+}
