@@ -83,11 +83,12 @@ code {
     font-size: clamp(1.6rem, 4vw, 2.1rem);
 }
 
-.brand-mark {
-    width: 1.1rem;
-    height: 1.1rem;
-    background: var(--val-red);
-    clip-path: polygon(0 0, 100% 0, 100% 45%, 45% 100%, 0 100%);
+.brand-logo {
+    display: block;
+    height: 2.25rem;
+    width: auto;
+    max-width: 8rem;
+    object-fit: contain;
 }
 
 .tab-bar {
@@ -131,7 +132,6 @@ code {
     }
 }
 
-
 .main-content {
     padding-block: 1.75rem 4rem;
 }
@@ -167,7 +167,6 @@ code {
 .status.is-error {
     color: var(--val-red);
 }
-
 
 .val-input {
     width: 100%;
@@ -263,7 +262,6 @@ code {
     color: var(--val-ink);
 }
 
-
 .agent-card,
 .map-card,
 .weapon-card,
@@ -272,7 +270,6 @@ code {
 .val-dialog {
     clip-path: polygon(0 0, calc(100% - var(--val-cut)) 0, 100% var(--val-cut), 100% 100%, var(--val-cut) 100%, 0 calc(100% - var(--val-cut)));
 }
-
 
 .agent-card {
     display: flex;
@@ -322,7 +319,6 @@ code {
 .agent-card:hover .agent-name {
     color: var(--val-red);
 }
-
 
 .map-card {
     position: relative;
@@ -389,7 +385,6 @@ code {
     color: var(--val-bone);
     font-weight: 600;
 }
-
 
 .val-dialog {
     width: min(960px, calc(100vw - 1.5rem));

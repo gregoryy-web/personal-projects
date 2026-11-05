@@ -71,7 +71,6 @@ function updateChipSelection(containerId, activeLabel) {
         .forEach((chip) => chip.setAttribute('aria-pressed', String(chip.dataset.value === activeLabel)));
 }
 
-
 const panelLoaders = {
     panelAgents: loadAgents,
     panelMaps: loadMaps,
@@ -105,7 +104,6 @@ function initTabs() {
         });
     });
 }
-
 
 async function loadAgents() {
     setStatus('agentStatus', 'Loading agents…');
@@ -169,8 +167,8 @@ function openAgentDialog(uuid) {
                 <p>${escapeHtml(agent.description)}</p>
                 <ul class="ability-list">
                     ${abilities
-                        .map(
-                            (ability) => `
+            .map(
+                (ability) => `
                         <li class="ability">
                             ${ability.displayIcon ? `<img src="${escapeHtml(ability.displayIcon)}" alt="">` : '<span class="ability-icon-empty"></span>'}
                             <div>
@@ -178,8 +176,8 @@ function openAgentDialog(uuid) {
                                 <p>${escapeHtml(ability.description)}</p>
                             </div>
                         </li>`
-                        )
-                        .join('')}
+            )
+            .join('')}
                 </ul>
             </div>
         </div>`;
@@ -213,7 +211,6 @@ function initAgentEvents() {
     });
 }
 
-
 async function loadMaps() {
     setStatus('mapStatus', 'Loading maps…');
     try {
@@ -244,7 +241,6 @@ function renderMaps() {
         )
         .join('');
 }
-
 
 function getWeaponCategory(weapon) {
     return weapon.category.split('::').pop();
