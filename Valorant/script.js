@@ -75,6 +75,7 @@ const panelLoaders = {
     panelAgents: loadAgents,
     panelMaps: loadMaps,
     panelWeapons: loadWeapons,
+    panelPlayers: initPlayers,
 };
 
 function initTabs() {
@@ -297,6 +298,126 @@ function initWeaponEvents() {
         updateChipSelection('weaponFilters', state.weaponCategory);
         renderWeapons();
     });
+}
+
+const playerApiBase = 'https://api.henrikdev.xyz/valorant';
+const playerApiKey = 'HDEV-e7458999-c7dd-4e35-8513-09c56f93bafc';
+
+async function fetchPlayerData(path) {
+    const key = playerApiKey.trim();
+    if (!key) throw new Error('Player search is not set up yet: add an API key to playerApiKey in script.js.');
+
+    const response = await fetch(`${playerApiBase}${path}`, { headers: { Authorization: key } });
+    if (response.status === 401 || response.status === 403) throw new Error('The API key was rejected. Check it and try again.');
+    if (response.status === 404) throw new Error('Player not found. Check the name, tag and region.');
+    if (response.status === 429) throw new Error('Too many requests. Wait a minute and try again.');
+    if (!response.ok) throw new Error(`Request failed (${response.status})`);
+    const body = await response.json();
+    return body.data;
+}
+
+function summarizeMatch(match, puuid) {
+    const me = match.players?.find((player) => player.puuid === puuid);
+    if (!me) return null;
+    const team = match.teams?.find((item) => item.team_id === me.team_id);
+    const agentId = String(me.agent?.id ?? '').toLowerCase();
+    return {
+        map: match.metadata?.map?.name ?? 'Unknown map',
+        mode: match.metadata?.queue?.name ?? '',
+        started: Date.parse(match.metadata?.started_at ?? '') || 0,
+        agent: me.agent?.name ?? '',
+        agentIcon: agentId ? `https://media.valorant-api.com/agents/${agentId}/displayicon.png` : '',
+        kills: me.stats?.kills ?? 0,
+        deaths: me.stats?.deaths ?? 0,
+        assists: me.stats?.assists ?? 0,
+        won: typeof team?.won === 'boolean' ? team.won : null,
+        score: team?.rounds ? `${team.rounds.won}-${team.rounds.lost}` : '',
+    };
+}
+
+function renderPlayer(account, rank, matches) {
+    const tierName = rank?.tier?.name;
+    const rankText = tierName && tierName !== 'Unrated' ? `${tierName} ${rank.rr ?? 0} RR` : 'Unranked';
+    const cardArt = account.card ? `https://media.valorant-api.com/playercards/${account.card}/smallart.png` : '';
+    getElement('playerProfile').innerHTML = `
+        <div class="player-profile">
+            ${cardArt ? `<img src="${escapeHtml(cardArt)}" alt="">` : ''}
+            <div>
+                <h3>${escapeHtml(account.name)}<span class="player-tag">#${escapeHtml(account.tag)}</span></h3>
+                <p>Level ${escapeHtml(account.account_level)} &middot; ${escapeHtml(rankText)}</p>
+            </div>
+        </div>`;
+
+    const decided = matches.filter((match) => match.won !== null);
+    const wins = decided.filter((match) => match.won).length;
+    const kills = matches.reduce((sum, match) => sum + match.kills, 0);
+    const deaths = matches.reduce((sum, match) => sum + match.deaths, 0);
+    const tiles = [
+        ['Matches', matches.length],
+        ['Win rate', decided.length ? `${Math.round((wins / decided.length) * 100)}%` : '–'],
+        ['K/D', deaths ? (kills / deaths).toFixed(2) : kills.toFixed(2)],
+        ['Avg kills', matches.length ? (kills / matches.length).toFixed(1) : '–'],
+    ];
+    getElement('playerStats').innerHTML = tiles
+        .map(([label, value]) => `<div class="stat-tile"><span class="stat-value">${escapeHtml(value)}</span><span class="stat-label">${label}</span></div>`)
+        .join('');
+
+    getElement('matchList').innerHTML = matches.length
+        ? matches
+              .map((match) => {
+                  const result = match.won === null ? 'none' : match.won ? 'win' : 'loss';
+                  const label = match.won === null ? 'Played' : match.won ? 'Win' : 'Loss';
+                  return `
+            <article class="match-row is-${result}">
+                ${match.agentIcon ? `<img src="${escapeHtml(match.agentIcon)}" alt="">` : '<span class="match-icon-empty"></span>'}
+                <div class="match-main">
+                    <h3>${escapeHtml(match.map)}</h3>
+                    <p>${escapeHtml(match.agent)} &middot; ${escapeHtml(match.mode)} &middot; ${new Date(match.started).toLocaleDateString()}</p>
+                </div>
+                <div class="match-kda">${match.kills} / ${match.deaths} / ${match.assists}</div>
+                <div class="match-result">${label}${match.score ? ` ${escapeHtml(match.score)}` : ''}</div>
+            </article>`;
+              })
+              .join('')
+        : '<p class="status">No recent matches found for this player.</p>';
+}
+
+async function searchPlayer(event) {
+    event.preventDefault();
+    const name = getElement('playerName').value.trim();
+    const tag = getElement('playerTag').value.trim().replace(/^#/, '');
+        if (!name || !tag) return;
+
+    const button = getElement('playerSubmit');
+    button.disabled = true;
+    setStatus('playerStatus', 'Searching…');
+    ['playerProfile', 'playerStats', 'matchList'].forEach((id) => (getElement(id).innerHTML = ''));
+
+    const encoded = `${encodeURIComponent(name)}/${encodeURIComponent(tag)}`;
+    try {
+        const account = await fetchPlayerData(`/v2/account/${encoded}`);
+        const playerRegion = account.region;
+        const [rank, rawMatches] = await Promise.all([
+            fetchPlayerData(`/v3/mmr/${playerRegion}/pc/${encoded}`).then((data) => data?.current).catch(() => null),
+            fetchPlayerData(`/v4/matches/${playerRegion}/pc/${encoded}?size=10`),
+        ]);
+        const matches = (rawMatches || [])
+            .map((match) => summarizeMatch(match, account.puuid))
+            .filter(Boolean)
+            .sort((a, b) => b.started - a.started);
+        renderPlayer(account, rank, matches);
+        setStatus('playerStatus', '');
+    } catch (error) {
+        setStatus('playerStatus', error.message, true);
+    } finally {
+        button.disabled = false;
+    }
+}
+
+function initPlayers() {
+    state.loadedPanels.add('panelPlayers');
+    getElement('playerForm').addEventListener('submit', searchPlayer);
+    setStatus('playerStatus', '');
 }
 
 initTabs();

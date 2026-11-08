@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Valorant</title>
-    <link rel="icon" type="image/png" href="img/logo.png">
+    <link rel="icon" type="image/png" href="img/favcon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -26,6 +26,8 @@
                     aria-controls="panelMaps" aria-selected="false" tabindex="-1">Maps</button>
                 <button type="button" class="tab-button" role="tab" id="tabWeapons" data-panel="panelWeapons"
                     aria-controls="panelWeapons" aria-selected="false" tabindex="-1">Weapons</button>
+                <button type="button" class="tab-button" role="tab" id="tabPlayers" data-panel="panelPlayers"
+                    aria-controls="panelPlayers" aria-selected="false" tabindex="-1">Players</button>
             </nav>
         </div>
     </header>
@@ -60,6 +62,29 @@
             </div>
             <p class="status" id="weaponStatus" role="status"></p>
             <div class="row g-3 row-cols-1 sm:row-cols-2 lg:row-cols-3" id="weaponGrid"></div>
+        </section>
+
+        <section id="panelPlayers" role="tabpanel" aria-labelledby="tabPlayers" hidden>
+            <h2 class="panel-title">Players</h2>
+            <p class="panel-note">Look up a player by Riot ID to see their rank and recent match history.</p>
+
+            <form id="playerForm" class="player-form" autocomplete="off">
+                <div>
+                    <label class="field-label" for="playerName">Name</label>
+                    <input type="text" id="playerName" class="val-input" required placeholder="Riot name">
+                </div>
+                <div>
+                    <label class="field-label" for="playerTag">Tag</label>
+                    <input type="text" id="playerTag" class="val-input" required placeholder="1234" maxlength="5">
+                </div>
+                <button type="submit" class="val-button" id="playerSubmit">Search player</button>
+            </form>
+
+
+            <p class="status" id="playerStatus" role="status"></p>
+            <div id="playerProfile"></div>
+            <div id="playerStats" class="stat-grid"></div>
+            <div id="matchList" class="match-list"></div>
         </section>
     </main>
 
