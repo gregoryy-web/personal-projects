@@ -148,6 +148,10 @@ function renderAgents() {
         .join('');
 }
 
+function stripTags(value) {
+    return String(value ?? '').replace(/<[^>]*>/g, '').replace(/\s{2,}/g, ' ').trim();
+}
+
 function openAgentDialog(uuid) {
     const agent = state.agents.find((item) => item.uuid === uuid);
     if (!agent) return;
@@ -167,7 +171,7 @@ function openAgentDialog(uuid) {
                     ${agent.role?.displayIcon ? `<img src="${escapeHtml(agent.role.displayIcon)}" alt="">` : ''}
                     ${escapeHtml(agent.role?.displayName ?? '')}
                 </p>
-                <p>${escapeHtml(agent.description)}</p>
+                <p>${escapeHtml(stripTags(agent.description))}</p>
                 <ul class="ability-list">
                     ${abilities
             .map(
@@ -176,7 +180,7 @@ function openAgentDialog(uuid) {
                             ${ability.displayIcon ? `<img src="${escapeHtml(ability.displayIcon)}" alt="">` : '<span class="ability-icon-empty"></span>'}
                             <div>
                                 <h3>${escapeHtml(ability.displayName)}</h3>
-                                <p>${escapeHtml(ability.description)}</p>
+                                <p>${escapeHtml(stripTags(ability.description))}</p>
                             </div>
                         </li>`
             )

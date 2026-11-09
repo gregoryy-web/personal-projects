@@ -1,0 +1,131 @@
+.dialog-art {
+    position: relative;
+    overflow: hidden;
+    min-height: 28rem;
+}
+
+.dialog-art img {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-fit: cover;
+    object-position: center 40%;
+    transform: scale(1);
+    transform-origin: 50% 70%;
+}
+
+img {
+    max-width: 100%;
+}
+
+.dialog-info,
+.ability div {
+    min-width: 0;
+}
+
+.ability p,
+.dialog-info p {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 991.98px) {
+    .dialog-art {
+        min-height: 0;
+        height: auto;
+        padding-top: 2.5rem;
+    }
+
+    .dialog-art {
+        min-height: 0;
+    }
+
+    .dialog-art img {
+        height: 22rem;
+        max-height: 50vh;
+        object-fit: contain;
+        transform: scale(1.1);
+        transform-origin: 50% 75%;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .val-dialog {
+        width: 100vw;
+        max-width: none;
+        height: 100dvh;
+        max-height: 100dvh;
+        clip-path: none;
+    }
+
+    .dialog-close {
+        position: fixed;
+        top: 0.75rem;
+        right: 0.75rem;
+    }
+
+    .dialog-info {
+        padding: 1.25rem 1rem 2rem;
+    }
+
+    .ability {
+        grid-template-columns: 2.25rem 1fr;
+        gap: 0.75rem;
+    }
+
+    .ability img,
+    .ability-icon-empty {
+        width: 2.25rem;
+        height: 2.25rem;
+        padding: 0.3rem;
+    }
+
+    .toolbar-search {
+        max-width: none;
+    }
+
+    .site-title {
+        padding-block: 0.6rem 0;
+    }
+
+    .tab-button {
+        padding: 0.7rem 0.85rem;
+        font-size: 1.15rem;
+    }
+
+    .main-content {
+        padding-block: 1.25rem 3rem;
+    }
+
+    .weapon-card img {
+        height: 4.5rem;
+    }
+}
+
+@media (max-width: 479.98px) {
+    .player-form {
+        grid-template-columns: 1fr;
+    }
+
+    .player-profile {
+        align-items: flex-start;
+    }
+
+    .player-profile h3 {
+        font-size: 1.8rem;
+        overflow-wrap: anywhere;
+    }
+
+    .match-row {
+        padding: 0.6rem 0.75rem;
+        gap: 0.75rem;
+    }
+
+    .rank-row {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .rank-name strong {
+        font-size: 1.25rem;
+        overflow-wrap: anywhere;
+    }
+}
