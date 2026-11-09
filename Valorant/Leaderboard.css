@@ -91,3 +91,28 @@
         text-align: left;
     }
 }
+
+.rank-row,
+.rank-row:disabled,
+.rank-row:active,
+.rank-row:focus {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--val-panel);
+    color: var(--val-bone);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.rank-row:disabled {
+    -webkit-text-fill-color: var(--val-bone);
+}
+
+@media (hover: hover) {
+    .rank-row:hover:not(:disabled) {
+        background-color: var(--val-raise);
+    }
+}
+
+.rank-row:active:not(:disabled) {
+    background-color: var(--val-raise);
+}
