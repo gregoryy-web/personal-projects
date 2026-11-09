@@ -1,0 +1,93 @@
+:root {
+    --val-gold: #f5c76a;
+}
+
+.rank-row {
+    clip-path: polygon(0 0, calc(100% - var(--val-cut)) 0, 100% var(--val-cut), 100% 100%, var(--val-cut) 100%, 0 calc(100% - var(--val-cut)));
+}
+
+.rank-row:focus-visible {
+    outline: 3px solid var(--val-bone);
+    outline-offset: -3px;
+}
+
+.rank-list {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.rank-row {
+    display: grid;
+    grid-template-columns: 2.5rem 3rem 1fr auto 6rem;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    background: var(--val-panel);
+    border: 0;
+    box-shadow: inset 4px 0 0 var(--val-line);
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.rank-row:hover:not(:disabled) {
+    background: var(--val-raise);
+}
+
+.rank-row:disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+
+.rank-row.is-podium {
+    box-shadow: inset 4px 0 0 var(--val-gold);
+}
+
+.rank-row img {
+    width: 3rem;
+    height: 3rem;
+    background: var(--val-raise);
+    object-fit: cover;
+}
+
+.rank-pos {
+    font-family: var(--val-display);
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.is-podium .rank-pos {
+    color: var(--val-gold);
+}
+
+.rank-name strong {
+    font-family: var(--val-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.rank-tier {
+    font-weight: 600;
+}
+
+.rank-wins {
+    color: var(--val-mist);
+    text-align: right;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 575.98px) {
+    .rank-row {
+        grid-template-columns: 2rem 3rem 1fr;
+        gap: 0.75rem;
+    }
+
+    .rank-tier,
+    .rank-wins {
+        grid-column: 3;
+        text-align: left;
+    }
+}

@@ -13,6 +13,7 @@
         rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
+    <link href="leaderboard.css" rel="stylesheet">
 </head>
 
 <body>
@@ -28,6 +29,8 @@
                     aria-controls="panelWeapons" aria-selected="false" tabindex="-1">Weapons</button>
                 <button type="button" class="tab-button" role="tab" id="tabPlayers" data-panel="panelPlayers"
                     aria-controls="panelPlayers" aria-selected="false" tabindex="-1">Players</button>
+                <button type="button" class="tab-button" role="tab" id="tabLeaderboard" data-panel="panelLeaderboard"
+                    aria-controls="panelLeaderboard" aria-selected="false" tabindex="-1">Top Players</button>
             </nav>
         </div>
     </header>
@@ -85,6 +88,17 @@
             <div id="playerProfile"></div>
             <div id="playerStats" class="stat-grid"></div>
             <div id="matchList" class="match-list"></div>
+        </section>
+
+        <section id="panelLeaderboard" role="tabpanel" aria-labelledby="tabLeaderboard" hidden>
+            <h2 class="panel-title">Top Players</h2>
+            <p class="panel-note">The highest-ranked players in each region, straight from the Immortal and Radiant
+                leaderboard. Select a player to open their profile.</p>
+            <div class="toolbar">
+                <div class="chip-group" id="leaderboardRegions" role="group" aria-label="Filter by region"></div>
+            </div>
+            <p class="status" id="leaderboardStatus" role="status"></p>
+            <div id="leaderboardList" class="rank-list"></div>
         </section>
     </main>
 

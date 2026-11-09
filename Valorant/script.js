@@ -9,6 +9,7 @@ const state = {
     agentRole: 'All',
     agentQuery: '',
     weaponCategory: 'All',
+    leaderboardRegion: 'North America',
     loadedPanels: new Set(),
 };
 
@@ -76,6 +77,7 @@ const panelLoaders = {
     panelMaps: loadMaps,
     panelWeapons: loadWeapons,
     panelPlayers: initPlayers,
+    panelLeaderboard: loadLeaderboard,
 };
 
 function initTabs() {
@@ -420,7 +422,113 @@ function initPlayers() {
     setStatus('playerStatus', '');
 }
 
+const leaderboardRegions = {
+    'North America': 'na',
+    Europe: 'eu',
+    'Asia Pacific': 'ap',
+    Korea: 'kr',
+    'Latin America': 'latam',
+    Brazil: 'br',
+};
+const leaderboardSize = 25;
+const leaderboardCache = new Map();
+
+function getTierName(tier) {
+    if (tier && typeof tier === 'object') return tier.name ?? '';
+    const id = Number(tier);
+    if (id >= 27) return 'Radiant';
+    if (id >= 24) return `Immortal ${id - 23}`;
+    if (id >= 21) return `Ascendant ${id - 20}`;
+    return '';
+}
+
+async function fetchLeaderboard(regionCode) {
+    if (!leaderboardCache.has(regionCode)) {
+        const data = await fetchPlayerData(`/v3/leaderboard/${regionCode}/pc?size=${leaderboardSize}`);
+        const players = Array.isArray(data) ? data : data?.players ?? [];
+        leaderboardCache.set(regionCode, players);
+    }
+    return leaderboardCache.get(regionCode);
+}
+
+async function loadLeaderboard() {
+    buildChips('leaderboardRegions', Object.keys(leaderboardRegions), state.leaderboardRegion);
+    state.loadedPanels.add('panelLeaderboard');
+    await renderLeaderboard();
+}
+
+async function renderLeaderboard() {
+    const region = state.leaderboardRegion;
+    const list = getElement('leaderboardList');
+    list.innerHTML = '';
+    setStatus('leaderboardStatus', `Loading top players in ${region}…`);
+
+    try {
+        const players = await fetchLeaderboard(leaderboardRegions[region]);
+        if (region !== state.leaderboardRegion) return;
+
+        if (!players.length) {
+            setStatus('leaderboardStatus', 'No leaderboard data is available for this region right now.');
+            return;
+        }
+        setStatus('leaderboardStatus', '');
+
+        list.innerHTML = players
+            .slice(0, leaderboardSize)
+            .map((player, index) => {
+                const hidden = player.is_anonymized || !player.name;
+                const position = player.leaderboard_rank ?? index + 1;
+                const art = player.card ? `https://media.valorant-api.com/playercards/${player.card}/smallart.png` : '';
+                const tier = getTierName(player.tier);
+                const rr = player.rr ?? player.ranked_rating;
+                const rankText = [tier, rr != null ? `${rr} RR` : ''].filter(Boolean).join(' · ');
+                const nameHtml = hidden
+                    ? '<strong>Anonymous player</strong>'
+                    : `<strong>${escapeHtml(player.name)}</strong><span class="player-tag">#${escapeHtml(player.tag)}</span>`;
+                return `
+            <button type="button" class="rank-row${position <= 3 ? ' is-podium' : ''}"
+                data-name="${hidden ? '' : escapeHtml(player.name)}" data-tag="${hidden ? '' : escapeHtml(player.tag)}"
+                ${hidden ? 'disabled' : ''}>
+                <span class="rank-pos">${escapeHtml(position)}</span>
+                ${art ? `<img src="${escapeHtml(art)}" alt="" loading="lazy">` : '<span class="match-icon-empty"></span>'}
+                <span class="rank-name">${nameHtml}</span>
+                <span class="rank-tier">${escapeHtml(rankText)}</span>
+                <span class="rank-wins">${player.wins != null ? `${escapeHtml(player.wins)} wins` : ''}</span>
+            </button>`;
+            })
+            .join('');
+    } catch (error) {
+        if (region !== state.leaderboardRegion) return;
+        setStatus('leaderboardStatus', `Couldn't load the leaderboard (${error.message}). Pick a region to retry.`, true);
+    }
+}
+
+function openPlayerFromLeaderboard(name, tag) {
+    getElement('tabPlayers').click();
+    getElement('playerName').value = name;
+    getElement('playerTag').value = tag;
+    getElement('playerForm').requestSubmit();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function initLeaderboardEvents() {
+    getElement('leaderboardRegions').addEventListener('click', (event) => {
+        const chip = event.target.closest('.chip');
+        if (!chip || chip.dataset.value === state.leaderboardRegion) return;
+        state.leaderboardRegion = chip.dataset.value;
+        updateChipSelection('leaderboardRegions', state.leaderboardRegion);
+        renderLeaderboard();
+    });
+
+    getElement('leaderboardList').addEventListener('click', (event) => {
+        const row = event.target.closest('.rank-row');
+        if (!row || row.disabled) return;
+        openPlayerFromLeaderboard(row.dataset.name, row.dataset.tag);
+    });
+}
+
 initTabs();
 initAgentEvents();
+initLeaderboardEvents();
 initWeaponEvents();
 loadAgents();
