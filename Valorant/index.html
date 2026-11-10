@@ -18,7 +18,7 @@
 <body>
     <header class="site-header">
         <div class="container header-inner">
-            <h1 class="site-title"><img src="img/favcon.png" alt="" class="brand-logo"></h1>
+            <h1 class="site-title"><img src="img/favcon.png" alt="Valorant" class="nav-icon"></h1>
             <nav class="tab-bar" role="tablist" aria-label="Sections">
                 <button type="button" class="tab-button" role="tab" id="tabAgents" data-panel="panelAgents"
                     aria-controls="panelAgents" aria-selected="true">Agents</button>
@@ -26,10 +26,8 @@
                     aria-controls="panelMaps" aria-selected="false" tabindex="-1">Maps</button>
                 <button type="button" class="tab-button" role="tab" id="tabWeapons" data-panel="panelWeapons"
                     aria-controls="panelWeapons" aria-selected="false" tabindex="-1">Weapons</button>
-                <button type="button" class="tab-button" role="tab" id="tabPlayers" data-panel="panelPlayers"
-                    aria-controls="panelPlayers" aria-selected="false" tabindex="-1">Players</button>
                 <button type="button" class="tab-button" role="tab" id="tabLeaderboard" data-panel="panelLeaderboard"
-                    aria-controls="panelLeaderboard" aria-selected="false" tabindex="-1">Top Players</button>
+                    aria-controls="panelLeaderboard" aria-selected="false" tabindex="-1">Leaderboard</button>
             </nav>
         </div>
     </header>
@@ -66,9 +64,9 @@
             <div class="row g-3 row-cols-1 sm:row-cols-2 lg:row-cols-3" id="weaponGrid"></div>
         </section>
 
-        <section id="panelPlayers" role="tabpanel" aria-labelledby="tabPlayers" hidden>
-            <h2 class="panel-title">Players</h2>
-            <p class="panel-note">Look up a player by Riot ID to see their rank and recent match history.</p>
+        <section id="panelLeaderboard" role="tabpanel" aria-labelledby="tabLeaderboard" hidden>
+            <h2 class="panel-title">Leaderboard</h2>
+            <p class="panel-note">Search any player by Riot ID, or browse the top players in each region and select one to open their profile.</p>
 
             <form id="playerForm" class="player-form" autocomplete="off">
                 <div>
@@ -80,19 +78,14 @@
                     <input type="text" id="playerTag" class="val-input" required placeholder="1234" maxlength="5">
                 </div>
                 <button type="submit" class="val-button" id="playerSubmit">Search player</button>
+                <button type="button" class="val-button" id="playerClear" hidden>Clear</button>
             </form>
-
 
             <p class="status" id="playerStatus" role="status"></p>
             <div id="playerProfile"></div>
             <div id="playerStats" class="stat-grid"></div>
             <div id="matchList" class="match-list"></div>
-        </section>
 
-        <section id="panelLeaderboard" role="tabpanel" aria-labelledby="tabLeaderboard" hidden>
-            <h2 class="panel-title">Top Players</h2>
-            <p class="panel-note">The highest-ranked players in each region, straight from the Immortal and Radiant
-                leaderboard. Select a player to open their profile.</p>
             <div class="toolbar">
                 <div class="chip-group" id="leaderboardRegions" role="group" aria-label="Filter by region"></div>
             </div>

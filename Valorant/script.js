@@ -76,7 +76,6 @@ const panelLoaders = {
     panelAgents: loadAgents,
     panelMaps: loadMaps,
     panelWeapons: loadWeapons,
-    panelPlayers: initPlayers,
     panelLeaderboard: loadLeaderboard,
 };
 
@@ -392,7 +391,7 @@ async function searchPlayer(event) {
     event.preventDefault();
     const name = getElement('playerName').value.trim();
     const tag = getElement('playerTag').value.trim().replace(/^#/, '');
-        if (!name || !tag) return;
+    if (!name || !tag) return;
 
     const button = getElement('playerSubmit');
     button.disabled = true;
@@ -412,6 +411,7 @@ async function searchPlayer(event) {
             .filter(Boolean)
             .sort((a, b) => b.started - a.started);
         renderPlayer(account, rank, matches);
+        getElement('playerClear').hidden = false;
         setStatus('playerStatus', '');
     } catch (error) {
         setStatus('playerStatus', error.message, true);
@@ -420,9 +420,17 @@ async function searchPlayer(event) {
     }
 }
 
+function clearPlayer() {
+    ['playerProfile', 'playerStats', 'matchList'].forEach((id) => (getElement(id).innerHTML = ''));
+    getElement('playerName').value = '';
+    getElement('playerTag').value = '';
+    getElement('playerClear').hidden = true;
+    setStatus('playerStatus', '');
+}
+
 function initPlayers() {
-    state.loadedPanels.add('panelPlayers');
     getElement('playerForm').addEventListener('submit', searchPlayer);
+    getElement('playerClear').addEventListener('click', clearPlayer);
     setStatus('playerStatus', '');
 }
 
@@ -508,11 +516,10 @@ async function renderLeaderboard() {
 }
 
 function openPlayerFromLeaderboard(name, tag) {
-    getElement('tabPlayers').click();
     getElement('playerName').value = name;
     getElement('playerTag').value = tag;
     getElement('playerForm').requestSubmit();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    getElement('playerForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function initLeaderboardEvents() {
@@ -532,6 +539,7 @@ function initLeaderboardEvents() {
 }
 
 initTabs();
+initPlayers();
 initAgentEvents();
 initLeaderboardEvents();
 initWeaponEvents();
