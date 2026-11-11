@@ -923,4 +923,4 @@ initPlayers();
 initAgentEvents();
 initLeaderboardEvents();
 initWeaponEvents();
-loadAgents();
+loadAgents();   
