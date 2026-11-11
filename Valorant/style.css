@@ -1034,7 +1034,7 @@ body {
         linear-gradient(180deg, #0a1118 0%, var(--val-ink) 100%);
     border-top: 1px solid var(--val-line);
     color: var(--val-mist);
-    font-size: 0.95rem;
+    font-size: 0.88rem;
 }
 
 .site-footer::before {
@@ -1042,28 +1042,10 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: min(16rem, 50%);
-    height: 4px;
+    width: min(12rem, 50%);
+    height: 3px;
     background: var(--val-red);
-    clip-path: polygon(0 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
-}
-
-.footer-watermark {
-    position: absolute;
-    right: -0.5rem;
-    bottom: -0.1em;
-    z-index: -1;
-    font-family: var(--val-display);
-    font-size: clamp(5rem, 17vw, 15rem);
-    font-weight: 700;
-    line-height: 0.8;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255, 70, 85, 0.16);
-    pointer-events: none;
-    user-select: none;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
 }
 
 .site-footer .container {
@@ -1073,29 +1055,29 @@ body {
 .footer-grid {
     display: grid;
     grid-template-columns: 1.15fr 1fr 1fr 1.4fr;
-    gap: 2rem 2.5rem;
+    gap: 1.25rem 2rem;
     align-items: start;
-    padding-block: 3rem 2.25rem;
+    padding-block: 1.5rem 1rem;
 }
 
 .footer-brand {
     display: flex;
     align-items: center;
-    gap: 0.85rem;
+    gap: 0.65rem;
 }
 
 .footer-logo {
     display: block;
-    height: 3rem;
+    height: 2.25rem;
     width: auto;
     flex: none;
-    filter: drop-shadow(0 0 12px rgba(255, 70, 85, 0.4));
+    filter: drop-shadow(0 0 10px rgba(255, 70, 85, 0.4));
 }
 
 .footer-brand-name {
     margin: 0;
     font-family: var(--val-display);
-    font-size: 1.8rem;
+    font-size: 1.35rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -1104,8 +1086,8 @@ body {
 }
 
 .footer-brand-sub {
-    margin: 0.4rem 0 0;
-    font-size: 0.72rem;
+    margin: 0.3rem 0 0;
+    font-size: 0.65rem;
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -1115,10 +1097,10 @@ body {
 .footer-heading {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    margin: 0 0 1.1rem;
+    gap: 0.5rem;
+    margin: 0 0 0.6rem;
     font-family: var(--val-display);
-    font-size: 1.15rem;
+    font-size: 1rem;
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -1128,8 +1110,8 @@ body {
 .footer-heading::before {
     content: "";
     flex: none;
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.4rem;
+    height: 0.4rem;
     background: var(--val-red);
     transform: rotate(45deg);
 }
@@ -1149,7 +1131,7 @@ body {
 }
 
 .footer-links li + li {
-    margin-top: 0.45rem;
+    margin-top: 0.2rem;
 }
 
 .footer-links a {
@@ -1157,7 +1139,7 @@ body {
     display: inline-block;
     padding-left: 0;
     font-family: var(--val-display);
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -1180,13 +1162,13 @@ body {
 
 .footer-links a:hover,
 .footer-links a:focus-visible {
-    padding-left: 1rem;
+    padding-left: 0.9rem;
     color: var(--val-bone);
 }
 
 .footer-links a:hover::before,
 .footer-links a:focus-visible::before {
-    width: 0.4rem;
+    width: 0.35rem;
 }
 
 .footer-links a:focus-visible,
@@ -1199,9 +1181,9 @@ body {
 .dev-card {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
-    padding: 0.7rem 0.9rem;
-    margin-bottom: 0.9rem;
+    gap: 0.65rem;
+    padding: 0.4rem 0.7rem;
+    margin-bottom: 0.5rem;
     background: linear-gradient(90deg, rgba(255, 70, 85, 0.16), rgba(255, 70, 85, 0) 65%), var(--val-panel);
     border-left: 3px solid var(--val-red);
     clip-path: polygon(0 0, calc(100% - var(--val-cut-small)) 0, 100% var(--val-cut-small), 100% 100%, var(--val-cut-small) 100%, 0 calc(100% - var(--val-cut-small)));
@@ -1223,14 +1205,14 @@ a.dev-card:focus-visible {
     display: grid;
     place-items: center;
     flex: none;
-    width: 2.7rem;
-    height: 2.7rem;
+    width: 2.1rem;
+    height: 2.1rem;
     background: var(--val-red);
     color: var(--val-ink);
     font-family: var(--val-display);
-    font-size: 1.7rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+    clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
 }
 
 .dev-avatar img {
@@ -1245,7 +1227,7 @@ a.dev-card:focus-visible {
     display: block;
     margin: 0;
     font-family: var(--val-display);
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-weight: 700;
     letter-spacing: 0.04em;
     line-height: 1.1;
@@ -1255,7 +1237,7 @@ a.dev-card:focus-visible {
 .dev-role {
     display: block;
     margin: 0.1rem 0 0;
-    font-size: 0.72rem;
+    font-size: 0.62rem;
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -1263,14 +1245,15 @@ a.dev-card:focus-visible {
 }
 
 .social-list li + li {
-    margin-top: 0.7rem;
+    margin-top: 0.3rem;
 }
 
 .social-list a {
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
     color: var(--val-bone);
+    font-size: 0.85rem;
     font-weight: 500;
     text-decoration: none;
     overflow-wrap: anywhere;
@@ -1279,8 +1262,8 @@ a.dev-card:focus-visible {
 
 .social-list svg {
     flex: none;
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 1rem;
+    height: 1rem;
     color: var(--val-mist);
     transition: color 0.15s ease;
 }
@@ -1297,10 +1280,10 @@ a.dev-card:focus-visible {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 0.75rem 1.5rem;
-    padding-block: 1.1rem 1.5rem;
+    gap: 0.5rem 1.5rem;
+    padding-block: 0.6rem 0.75rem;
     border-top: 1px solid var(--val-line);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
@@ -1312,12 +1295,12 @@ a.dev-card:focus-visible {
 .to-top {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 0.45rem 1rem;
+    gap: 0.4rem;
+    padding: 0.25rem 0.8rem;
     background: var(--val-red);
     color: var(--val-ink);
     font-family: var(--val-display);
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-decoration: none;
@@ -1357,8 +1340,8 @@ a.dev-card:focus-visible {
 
 @media (max-width: 575.98px) {
     .footer-grid {
-        gap: 1.75rem 1.5rem;
-        padding-block: 2.25rem 1.5rem;
+        gap: 1.25rem 1.25rem;
+        padding-block: 1.25rem 1rem;
     }
 
     .footer-dev {
@@ -1366,11 +1349,11 @@ a.dev-card:focus-visible {
     }
 
     .footer-dev .dev-card {
-        margin-bottom: 0.9rem;
+        margin-bottom: 0.5rem;
     }
 
     .footer-brand-name {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
     }
 
     .footer-bottom {

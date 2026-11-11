@@ -265,6 +265,7 @@ async function loadWeapons() {
 
         state.loadedPanels.add('panelWeapons');
         renderWeapons();
+        initWeaponCompare();
     } catch (error) {
         setStatus('weaponStatus', `Couldn't load weapons (${error.message}). Check your connection, then switch tabs and come back to retry.`, true);
     }
@@ -302,6 +303,272 @@ function initWeaponEvents() {
         state.weaponCategory = chip.dataset.value;
         updateChipSelection('weaponFilters', state.weaponCategory);
         renderWeapons();
+    });
+}
+
+/* ---------- Weapon compare ---------- */
+
+const compareStorageKey = 'valtracker.weaponCompare';
+const compareWinStyle = 'color: var(--val-win)';
+const penetrationRank = { Low: 1, Medium: 2, High: 3 };
+const weaponCompare = { first: '', second: '', ready: false };
+
+function formatNumber(value, digits = 0) {
+    if (!Number.isFinite(value)) return '–';
+    return Number(value.toFixed(digits)).toLocaleString();
+}
+
+function getPelletCount(weapon) {
+    const pellets = weapon.weaponStats?.shotgunPelletCount;
+    return pellets > 1 ? pellets : 1;
+}
+
+function getDamageRange(weapon, position = 'close') {
+    const ranges = weapon.weaponStats?.damageRanges ?? [];
+    return position === 'far' ? ranges[ranges.length - 1] : ranges[0];
+}
+
+function readDamage(weapon, key, position) {
+    const damage = getDamageRange(weapon, position)?.[key];
+    return Number.isFinite(damage) ? damage : null;
+}
+
+function readShotDamage(weapon, key, position) {
+    const damage = readDamage(weapon, key, position);
+    return damage === null ? null : damage * getPelletCount(weapon);
+}
+
+function formatDamage(value, weapon) {
+    const pellets = getPelletCount(weapon);
+    if (pellets > 1 && Number.isFinite(value)) return `${formatNumber(value / pellets, 1)} ×${pellets}`;
+    return formatNumber(value, 1);
+}
+
+function readShotsToKill(weapon, key) {
+    if (getPelletCount(weapon) > 1) return null;
+    const damage = readDamage(weapon, key, 'close');
+    return damage > 0 ? Math.ceil(100 / damage) : null;
+}
+
+const compareStats = [
+    {
+        label: 'Cost (credits)',
+        read: (weapon) => weapon.shopData?.cost ?? null,
+        format: (value) => (value === 0 ? 'Free' : formatNumber(value)),
+        better: null,
+    },
+    { label: 'Fire rate (rounds/s)', read: (weapon) => weapon.weaponStats?.fireRate, digits: 2, better: 'high' },
+    { label: 'Magazine size', read: (weapon) => weapon.weaponStats?.magazineSize, better: 'high' },
+    { label: 'Reload time (s)', read: (weapon) => weapon.weaponStats?.reloadTimeSeconds, digits: 2, better: 'low' },
+    { label: 'Equip time (s)', read: (weapon) => weapon.weaponStats?.equipTimeSeconds, digits: 2, better: 'low' },
+    {
+        label: 'Move speed (% of knife)',
+        read: (weapon) => weapon.weaponStats?.runSpeedMultiplier * 100,
+        better: 'high',
+    },
+    { label: 'First-shot spread (°)', read: (weapon) => weapon.weaponStats?.firstBulletAccuracy, digits: 2, better: 'low' },
+    {
+        label: 'Wall penetration',
+        read: (weapon) => penetrationRank[String(weapon.weaponStats?.wallPenetration ?? '').split('::').pop()] ?? null,
+        format: (value) => Object.keys(penetrationRank).find((name) => penetrationRank[name] === value) ?? '–',
+        better: 'high',
+    },
+    { label: 'Head damage (close)', read: (weapon) => readShotDamage(weapon, 'headDamage', 'close'), format: formatDamage, better: 'high' },
+    { label: 'Body damage (close)', read: (weapon) => readShotDamage(weapon, 'bodyDamage', 'close'), format: formatDamage, better: 'high' },
+    { label: 'Leg damage (close)', read: (weapon) => readShotDamage(weapon, 'legDamage', 'close'), format: formatDamage, better: 'high' },
+    { label: 'Body damage (far)', read: (weapon) => readShotDamage(weapon, 'bodyDamage', 'far'), format: formatDamage, better: 'high' },
+    { label: 'Shots to kill (head)', read: (weapon) => readShotsToKill(weapon, 'headDamage'), better: 'low' },
+    { label: 'Shots to kill (body)', read: (weapon) => readShotsToKill(weapon, 'bodyDamage'), better: 'low' },
+];
+
+function getComparableWeapons() {
+    return state.weapons.filter((weapon) => weapon.weaponStats);
+}
+
+function buildWeaponOptions(selectedId) {
+    const weapons = getComparableWeapons();
+    const categories = [...new Set(weapons.map(getWeaponCategory))];
+    const groups = categories
+        .map((category) => {
+            const options = weapons
+                .filter((weapon) => getWeaponCategory(weapon) === category)
+                .map(
+                    (weapon) =>
+                        `<option value="${escapeHtml(weapon.uuid)}"${weapon.uuid === selectedId ? ' selected' : ''}>${escapeHtml(weapon.displayName)}</option>`
+                )
+                .join('');
+            return `<optgroup label="${escapeHtml(category)}">${options}</optgroup>`;
+        })
+        .join('');
+    return `<option value="">Choose a weapon</option>${groups}`;
+}
+
+function loadSavedCompare() {
+    const weapons = getComparableWeapons();
+    const exists = (id) => weapons.some((weapon) => weapon.uuid === id);
+    const byName = (name) => weapons.find((weapon) => weapon.displayName === name)?.uuid ?? '';
+
+    try {
+        const saved = JSON.parse(localStorage.getItem(compareStorageKey) || 'null');
+        if (saved && typeof saved === 'object') {
+            return { first: exists(saved.first) ? saved.first : '', second: exists(saved.second) ? saved.second : '' };
+        }
+    } catch (error) {
+        /* storage unavailable or corrupted: fall back to defaults */
+    }
+    return { first: byName('Vandal'), second: byName('Phantom') };
+}
+
+function saveCompare() {
+    try {
+        localStorage.setItem(compareStorageKey, JSON.stringify({ first: weaponCompare.first, second: weaponCompare.second }));
+    } catch (error) {
+        /* storage unavailable: the comparison just won't be remembered */
+    }
+}
+
+function renderWeaponCompare() {
+    const result = getElement('compareResult');
+    const first = state.weapons.find((weapon) => weapon.uuid === weaponCompare.first);
+    const second = state.weapons.find((weapon) => weapon.uuid === weaponCompare.second);
+    saveCompare();
+
+    if (!first || !second) {
+        result.innerHTML = '';
+        setStatus('compareStatus', 'Pick two weapons to compare them.');
+        return;
+    }
+    if (first === second) {
+        result.innerHTML = '';
+        setStatus('compareStatus', 'Pick two different weapons.');
+        return;
+    }
+
+    let firstWins = 0;
+    let secondWins = 0;
+    const tiles = compareStats
+        .map((stat) => {
+            const firstValue = stat.read(first);
+            const secondValue = stat.read(second);
+            let winner = '';
+            if (stat.better && Number.isFinite(firstValue) && Number.isFinite(secondValue) && firstValue !== secondValue) {
+                winner = firstValue > secondValue === (stat.better === 'high') ? 'first' : 'second';
+            }
+            if (winner === 'first') firstWins += 1;
+            if (winner === 'second') secondWins += 1;
+
+            const show = (value, weapon) => (stat.format ? stat.format(value, weapon) : formatNumber(value, stat.digits ?? 0));
+            const mark = (side) => (winner === side ? ` style="${compareWinStyle}"` : '');
+            return `
+            <div class="stat-tile">
+                <span class="stat-value">
+                    <span${mark('first')}>${escapeHtml(show(firstValue, first))}</span>
+                    <span class="stat-label">vs</span>
+                    <span${mark('second')}>${escapeHtml(show(secondValue, second))}</span>
+                </span>
+                <span class="stat-label">${escapeHtml(stat.label)}</span>
+            </div>`;
+        })
+        .join('');
+
+    const card = (weapon) => `
+            <div class="col">
+                <article class="weapon-card">
+                    <img src="${escapeHtml(weapon.displayIcon)}" alt="" loading="lazy">
+                    <h3>${escapeHtml(weapon.displayName)}</h3>
+                    <p class="weapon-meta">
+                        <span>${escapeHtml(getWeaponCategory(weapon))}</span>
+                        <span class="weapon-cost">${weapon.shopData?.cost ? `${weapon.shopData.cost.toLocaleString()} credits` : 'Free'}</span>
+                    </p>
+                </article>
+            </div>`;
+
+    result.innerHTML = `
+        <div class="row g-3 row-cols-1 sm:row-cols-2">${card(first)}${card(second)}</div>
+        <div class="stat-grid">${tiles}</div>
+        <p class="status" style="margin-top: 1rem">Green marks the better value. Shotguns show damage per pellet × pellets and are compared on full-spread damage; shots to kill isn't calculated for them.</p>`;
+    result.querySelector('.stat-grid').style.gridTemplateColumns = 'repeat(auto-fit, minmax(14rem, 1fr))';
+
+    const summary =
+        firstWins === secondWins
+            ? `${first.displayName} and ${second.displayName} are level: ${firstWins} stats each.`
+            : `${firstWins > secondWins ? first.displayName : second.displayName} leads, ${Math.max(firstWins, secondWins)} stats to ${Math.min(firstWins, secondWins)}.`;
+    setStatus('compareStatus', summary);
+}
+
+function initWeaponCompare() {
+    if (weaponCompare.ready) return;
+    weaponCompare.ready = true;
+
+    Object.assign(weaponCompare, loadSavedCompare());
+
+    const panel = getElement('panelWeapons');
+    const toolbar = panel.querySelector('.toolbar');
+
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.id = 'weaponCompareToggle';
+    toggle.className = 'val-button';
+    toggle.textContent = 'Compare weapons';
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-controls', 'weaponCompare');
+    toolbar.append(toggle);
+
+    const section = document.createElement('section');
+    section.id = 'weaponCompare';
+    section.setAttribute('aria-label', 'Compare weapons');
+    section.hidden = true;
+    section.innerHTML = `
+        <h3>Compare weapons</h3>
+        <div class="toolbar">
+            <div class="toolbar-search">
+                <label class="field-label" for="compareFirst">Weapon A</label>
+                <select id="compareFirst" class="val-input">${buildWeaponOptions(weaponCompare.first)}</select>
+            </div>
+            <div class="toolbar-search">
+                <label class="field-label" for="compareSecond">Weapon B</label>
+                <select id="compareSecond" class="val-input">${buildWeaponOptions(weaponCompare.second)}</select>
+            </div>
+            <button type="button" class="val-button" id="compareSwap">Swap</button>
+            <button type="button" class="val-button" id="compareReset">Clear</button>
+        </div>
+        <p class="status" id="compareStatus" role="status"></p>
+        <div id="compareResult"></div>`;
+    section.querySelector('.toolbar').style.alignItems = 'flex-end';
+    toolbar.after(section);
+
+    const firstSelect = getElement('compareFirst');
+    const secondSelect = getElement('compareSecond');
+
+    function syncSelects() {
+        firstSelect.value = weaponCompare.first;
+        secondSelect.value = weaponCompare.second;
+        renderWeaponCompare();
+    }
+
+    toggle.addEventListener('click', () => {
+        const opening = section.hidden;
+        section.hidden = !opening;
+        toggle.setAttribute('aria-expanded', String(opening));
+        toggle.textContent = opening ? 'Hide comparison' : 'Compare weapons';
+        if (opening) renderWeaponCompare();
+    });
+    firstSelect.addEventListener('change', () => {
+        weaponCompare.first = firstSelect.value;
+        renderWeaponCompare();
+    });
+    secondSelect.addEventListener('change', () => {
+        weaponCompare.second = secondSelect.value;
+        renderWeaponCompare();
+    });
+    getElement('compareSwap').addEventListener('click', () => {
+        [weaponCompare.first, weaponCompare.second] = [weaponCompare.second, weaponCompare.first];
+        syncSelects();
+    });
+    getElement('compareReset').addEventListener('click', () => {
+        weaponCompare.first = '';
+        weaponCompare.second = '';
+        syncSelects();
     });
 }
 
