@@ -664,6 +664,7 @@ async function searchPlayer(event) {
     button.disabled = true;
     setStatus('playerStatus', 'Searching…');
     ['playerProfile', 'playerStats', 'matchList'].forEach((id) => (getElement(id).innerHTML = ''));
+    resetBreakdown();
 
     const encoded = `${encodeURIComponent(name)}/${encodeURIComponent(tag)}`;
     try {
@@ -678,6 +679,7 @@ async function searchPlayer(event) {
             .filter(Boolean)
             .sort((a, b) => b.started - a.started);
         renderPlayer(account, rank, matches);
+        showBreakdown(matches);
         getElement('playerClear').hidden = false;
         setStatus('playerStatus', '');
     } catch (error) {
@@ -689,6 +691,7 @@ async function searchPlayer(event) {
 
 function clearPlayer() {
     ['playerProfile', 'playerStats', 'matchList'].forEach((id) => (getElement(id).innerHTML = ''));
+    resetBreakdown();
     getElement('playerName').value = '';
     getElement('playerTag').value = '';
     getElement('playerClear').hidden = true;
@@ -696,9 +699,119 @@ function clearPlayer() {
 }
 
 function initPlayers() {
+    initBreakdown();
     getElement('playerForm').addEventListener('submit', searchPlayer);
     getElement('playerClear').addEventListener('click', clearPlayer);
     setStatus('playerStatus', '');
+}
+
+/* ---------- Player performance breakdown ---------- */
+
+const breakdown = { mode: 'Agents', matches: [], mapIcons: null };
+const breakdownModes = { Agents: 'agent', Maps: 'map' };
+
+function groupMatches(matches, key) {
+    const groups = new Map();
+    matches.forEach((match) => {
+        const name = match[key];
+        if (!name) return;
+        const group = groups.get(name) ?? { name, icon: '', games: 0, decided: 0, wins: 0, kills: 0, deaths: 0, assists: 0 };
+        if (key === 'agent' && match.agentIcon) group.icon = match.agentIcon;
+        group.games += 1;
+        if (match.won !== null) {
+            group.decided += 1;
+            if (match.won) group.wins += 1;
+        }
+        group.kills += match.kills;
+        group.deaths += match.deaths;
+        group.assists += match.assists;
+        groups.set(name, group);
+    });
+    return [...groups.values()].sort((a, b) => b.games - a.games || b.wins - a.wins || a.name.localeCompare(b.name));
+}
+
+async function getMapIcons() {
+    if (breakdown.mapIcons) return breakdown.mapIcons;
+    try {
+        const maps = await fetchGameData('/maps');
+        breakdown.mapIcons = new Map(maps.map((map) => [map.displayName, map.listViewIcon || map.splash || '']));
+        return breakdown.mapIcons;
+    } catch (error) {
+        return new Map();
+    }
+}
+
+async function renderBreakdown() {
+    const mode = breakdown.mode;
+    const matches = breakdown.matches;
+    const key = breakdownModes[mode];
+    const groups = groupMatches(matches, key);
+    const icons = key === 'map' ? await getMapIcons() : null;
+    if (mode !== breakdown.mode || matches !== breakdown.matches) return;
+
+    getElement('breakdownList').innerHTML = groups
+        .map((group) => {
+            const winRate = group.decided ? Math.round((group.wins / group.decided) * 100) : null;
+            const result = winRate === null ? 'none' : winRate >= 50 ? 'win' : 'loss';
+            const kd = group.deaths ? group.kills / group.deaths : group.kills;
+            const icon = icons ? icons.get(group.name) : group.icon;
+            const record = group.decided ? ` &middot; ${group.wins}W ${group.decided - group.wins}L` : '';
+            return `
+            <article class="match-row is-${result}">
+                ${icon ? `<img src="${escapeHtml(icon)}" alt="" loading="lazy">` : '<span class="match-icon-empty"></span>'}
+                <div class="match-main">
+                    <h3>${escapeHtml(group.name)}</h3>
+                    <p>${group.games} ${group.games === 1 ? 'game' : 'games'}${record}</p>
+                </div>
+                <div class="match-kda">${kd.toFixed(2)} K/D</div>
+                <div class="match-result">${winRate === null ? '–' : `${winRate}% WR`}</div>
+            </article>`;
+        })
+        .join('');
+
+    const top = groups[0];
+    const noun = key === 'agent' ? 'agent' : 'map';
+    setStatus(
+        'breakdownNote',
+        top ? `Most played ${noun}: ${top.name} (${top.games} of ${matches.length} recent matches).` : ''
+    );
+}
+
+function showBreakdown(matches) {
+    breakdown.matches = matches;
+    getElement('playerBreakdown').hidden = !matches.length;
+    if (matches.length) renderBreakdown();
+}
+
+function resetBreakdown() {
+    breakdown.matches = [];
+    getElement('playerBreakdown').hidden = true;
+    getElement('breakdownList').innerHTML = '';
+    setStatus('breakdownNote', '');
+}
+
+function initBreakdown() {
+    const section = document.createElement('section');
+    section.id = 'playerBreakdown';
+    section.setAttribute('aria-label', 'Performance breakdown');
+    section.hidden = true;
+    section.innerHTML = `
+        <div class="toolbar">
+            <h3>Performance</h3>
+            <div class="chip-group" id="breakdownMode" role="group" aria-label="Group recent matches by"></div>
+        </div>
+        <div class="match-list" id="breakdownList"></div>
+        <p class="status" id="breakdownNote" role="status" style="margin-top: 0.75rem"></p>`;
+    getElement('playerStats').after(section);
+
+    buildChips('breakdownMode', Object.keys(breakdownModes), breakdown.mode);
+    getElement('breakdownMode').addEventListener('click', (event) => {
+        const chip = event.target.closest('.chip');
+        if (!chip || chip.dataset.value === breakdown.mode) return;
+        breakdown.mode = chip.dataset.value;
+        updateChipSelection('breakdownMode', breakdown.mode);
+        renderBreakdown();
+    });
 }
 
 const leaderboardRegions = {
