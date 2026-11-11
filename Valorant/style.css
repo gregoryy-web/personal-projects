@@ -939,3 +939,85 @@ img {
         overflow-wrap: anywhere;
     }
 }
+/* ===== Mobile refinements: smaller logo + nicer filter chips ===== */
+@media (max-width: 767.98px) {
+    .nav-icon {
+        height: 1.5rem;
+    }
+
+    .site-title {
+        padding-block: 0.65rem 0.1rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .nav-icon {
+        height: 1.25rem;
+    }
+
+    /* Role / weapon filters: one swipeable row instead of wrapping */
+    .chip-group {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 0.4rem;
+        margin-inline: -0.75rem;
+        padding: 0.15rem 0.75rem;
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .chip-group::-webkit-scrollbar {
+        display: none;
+    }
+
+    .chip {
+        flex: none;
+        scroll-snap-align: start;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.45rem 0.9rem;
+        white-space: nowrap;
+    }
+
+    /* Radio-style indicator on every chip */
+    .chip::before {
+        content: "";
+        flex: none;
+        width: 0.7rem;
+        height: 0.7rem;
+        border-radius: 50%;
+        border: 2px solid currentColor;
+        opacity: 0.6;
+        box-sizing: border-box;
+    }
+
+    .chip[aria-pressed='true']::before {
+        opacity: 1;
+        background: radial-gradient(circle, currentColor 0 35%, transparent 40%);
+    }
+
+    /* Regions: tidy 3-column grid of equal radio tiles (6 regions = 2 rows) */
+    #leaderboardRegions {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        overflow: visible;
+        margin-inline: 0;
+        padding: 0;
+        gap: 0.4rem;
+    }
+
+    #leaderboardRegions .chip {
+        justify-content: center;
+        gap: 0.35rem;
+        padding: 0.55rem 0.4rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 359.98px) {
+    #leaderboardRegions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
